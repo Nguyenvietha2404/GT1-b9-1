@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Học từ vựng tiếng Trung</title>
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js"></script>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--tx:#222;--mu:#777;--ac:#c0392b;--ln:#e3d9cc;--ok:#2e8b57;--no:#d33}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1b1a;--card:#2a2827;--tx:#eee;--mu:#aaa;--ln:#4a4540;--ac:#e8695a}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--tx)}
+header{padding:12px 16px;font-weight:700;font-size:18px}
+nav{display:flex;gap:6px;padding:0 12px 10px;overflow-x:auto}
+nav button,.btn{border:1px solid var(--ln);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:20px;cursor:pointer;font-size:14px;white-space:nowrap}
+nav button.on,.btn.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:760px;margin:0 auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:20px;text-align:center}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0;align-items:center}
+.mi{--s:90px;display:inline-flex;align-items:center;justify-content:center;width:var(--s);height:var(--s);margin:3px;border:2px solid var(--ac);font-size:calc(var(--s)*.7);font-family:"Kaiti SC",KaiTi,"Noto Serif SC",serif;
+background:linear-gradient(to top right,transparent calc(50% - 1px),var(--ln) 50%,transparent calc(50% + 1px)),linear-gradient(to bottom right,transparent calc(50% - 1px),var(--ln) 50%,transparent calc(50% + 1px)),linear-gradient(var(--ln),var(--ln)) center/1px 100% no-repeat,linear-gradient(var(--ln),var(--ln)) center/100% 1px no-repeat}
+.np{font-size:36px;margin:0 3px}.py{font-size:24px;color:var(--ac)}.vi{font-size:20px;margin:6px 0}.mu{color:var(--mu);font-size:14px}
+.opt{display:block;width:100%;margin:8px 0;padding:12px;text-align:left;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:16px;cursor:pointer}
+.opt.ok{background:var(--ok);color:#fff}.opt.no{background:var(--no);color:#fff}
+select{padding:8px;border-radius:8px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:15px}
+.wr{display:inline-block;margin:6px;border:2px solid var(--ln);border-radius:8px;background:var(--card)}
+table{width:100%;border-collapse:collapse;text-align:left}td{padding:8px 6px;border-bottom:1px solid var(--ln)}
+.ic{cursor:pointer;font-size:22px;background:none;border:0}
+</style></head><body>
+<header>🀄 Học từ vựng tiếng Trung</header>
+<nav id="tabs"></nav><main id="app"></main>
+<script>
+/* ===== DỮ LIỆU: thêm từ mới bằng cách thêm dòng ['汉字','pinyin','nghĩa','pinyin câu ví dụ 汉字câu'] ===== */
+const VOCAB=[
+['试试','shìshi','Thử xem','Zhè jiàn yīfu hěn piàoliang, nǐ shìshi ba. 这件衣服很漂亮，你试试吧。'],
+['当然','dāngrán','Đương nhiên','Zhè jiàn yīfu hěn piàoliang, wǒ dāngrán yào shìshi la. 这件衣服很漂亮，我当然要试试啦。'],
+['大','dà','To, lớn','Zhè jiàn yīfu tài dà le. 这件衣服太大了。'],
+['小','xiǎo','Nhỏ','Yǒu gèng xiǎo de ma? 有更小的吗？'],
+['更','gèng','Hơn, càng','Yǒu gèng xiǎo de ma? 有更小的吗？'],
+['太……了','tài...le','Quá...rồi','Zhè jiàn yīfu tài dà le. 这件衣服太大了。'],
+['再','zài','Lại, nữa (sự lặp lại)','Nǎichá zhème hǎohē, wǒ míngtiān zài hē. 奶茶这么好喝，我明天再喝。'],
+['穿','chuān','Mặc, mang','Wǒ chuān zhè jiàn yīfu. 我穿这件衣服。'],
+['T恤','T xù','Áo phông, áo T-shirt','Zhè jiàn T xù hǎo hǎokàn a. 这件T恤好好看啊。'],
+['衬衫','chènshān','Áo sơ mi','Wǒ mǎi le yī jiàn chènshān. 我买了一件衬衫。'],
+['裤子','kùzi','Quần','Wǒ mǎi le yī tiáo kùzi. 我买了一条裤子。'],
+['牛仔裤','niúzǎikù','Quần jeans','Tā chuān niúzǎikù. 他穿牛仔裤。'],
+['漂亮','piàoliang','Xinh đẹp','Zhè jiàn yīfu hěn piàoliang. 这件衣服很漂亮。'],
+['好看','hǎokàn','Đẹp, hay (để xem)','Zhè jiàn T xù hǎo hǎokàn a. 这件T恤好好看啊。'],
+['裙子','qúnzi','Váy','Zhè tiáo qúnzi hěn hǎo. 这条裙子很好。'],
+['条','tiáo','Chiếc (lượng từ cho quần, váy, cá...)','Yī tiáo qúnzi. 一条裙子。'],
+['合适','héshì','Phù hợp','Zhè tiáo qúnzi hěn héshì nǐ. 这条裙子很适合你。'],
+['对……很合适','duì...hěn héshì','Rất phù hợp với...','Zhè tiáo qúnzi duì nǐ hěn héshì. 这条裙子对你很合适。'],
+['公斤','gōngjīn','Kilogam (kg)','Yī gōngjīn píngguǒ duōshao qián? 一公斤苹果多少钱？'],
+['斤','jīn','Cân (1/2 kg)','Yī jīn píngguǒ shí kuài. 一斤苹果十块。'],
+['多少','duōshao','Bao nhiêu','Yī jīn píngguǒ duōshao qián? 一斤苹果多少钱？'],
+['贵','guì','Đắt','Zhè zhǒng xīguā hěn guì. 这种西瓜很贵。'],
+['便宜','piányi','Rẻ','Nà zhǒng xīguā hěn piányi. 那种西瓜很便宜。'],
+['便宜点儿吧','piányi diǎnr ba','Rẻ hơn chút đi','Piányi diǎnr ba. 便宜点儿吧。'],
+['西瓜','xīguā','Dưa hấu','Wǒ xǐhuān chī xīguā. 我喜欢吃西瓜。'],
+['黄瓜','huángguā','Dưa chuột','Wǒ mǎi le yī jīn huángguā. 我买了一斤黄瓜。'],
+['哈密瓜','hāmìguā','Dưa lê, dưa vàng','Hāmìguā hěn tián. 哈密瓜很甜。'],
+['红色','hóngsè','Màu đỏ','Wǒ xǐhuān hóngsè. 我喜欢红色。'],
+['种','zhǒng','Loại','Zhè zhǒng xīguā hěn guì. 这种西瓜很贵。'],
+['这种','zhè zhǒng','Loại này','Zhè zhǒng xīguā hěn guì. 这种西瓜很贵。'],
+['那种','nà zhǒng','Loại kia','Nà zhǒng xīguā hěn piányi. 那种西瓜很便宜。'],
+['好吃','hǎochī','Ngon','Zhège xīguā hěn hǎochī. 这个西瓜很好吃。'],
+['水果','shuǐguǒ','Hoa quả','Wǒ xǐhuān chī shuǐguǒ. 我喜欢吃水果。'],
+['水果店','shuǐguǒdiàn','Cửa hàng hoa quả','Wǒ zài shuǐguǒdiàn mǎi píngguǒ. 我在水果店买苹果。'],
+['开店','kāidiàn','Mở cửa hàng','Tā kāi le yī gè shuǐguǒdiàn. 他开了一个水果店。'],
+['梨子','lízi','Quả lê','Wǒ xǐhuān chī lízi. 我喜欢吃梨子。'],
+['番石榴','fānshíliu','Quả ổi','Fānshíliu hěn hǎochī. 番石榴很好吃。'],
+['葡萄','pútáo','Quả nho','Wǒ xǐhuān chī pútáo. 我喜欢吃葡萄。'],
+['葡萄酒','pútáojiǔ','Rượu vang','Wǒ hē pútáojiǔ. 我喝葡萄酒。'],
+['火龙果','huǒlóngguǒ','Quả thanh long','Huǒlóngguǒ hěn hǎochī. 火龙果很好吃。'],
+['柚子','yòuzi','Quả bưởi','Yòuzi hěn dà. 柚子很大。'],
+['米饭','mǐfàn','Cơm','Wǒ chī mǐfàn. 我吃米饭。'],
+['煎蛋','jiāndàn','Trứng rán','Wǒ chī jiāndàn. 我吃煎蛋。'],
+['煎虾','jiānxiā','Tôm rán','Wǒ chī jiānxiā. 我吃煎虾。'],
+['豆汁儿','dòuzhīr','Nước đậu (món Bắc Kinh)','Wǒ hē dòuzhīr. 我喝豆汁儿。'],
+['益禾糖','Yìhétáng','Tên thương hiệu trà sữa','Wǒ hē Yìhétáng nǎichá. 我喝益禾糖奶茶。'],
+['这么','zhème','Như thế này, như vậy','Nǎichá zhème hǎohē. 奶茶这么好喝。'],
+['好喝','hǎohē','Ngon (để uống)','Nǎichá hěn hǎohē. 奶茶很好喝。']
+].map(([han,py,vi,ex])=>{const m=ex.match(/^(.*?)\s*([\u4e00-\u9fff].*)$/);return{han,py,vi,exPy:m[1],exHan:m[2]}});
+
+const SENT=[
+['这件衣服很漂亮，你试试吧。','Zhè jiàn yīfu hěn piàoliang, nǐ shìshi ba.','Bộ quần áo này rất đẹp, bạn thử xem.'],
+['这件衣服很漂亮，我当然要试试啦。','Zhè jiàn yīfu hěn piàoliang, wǒ dāngrán yào shìshi la.','Bộ quần áo này rất đẹp, tôi đương nhiên phải thử rồi.'],
+['奶茶这么好喝，我明天再喝。','Nǎichá zhème hǎohē, wǒ míngtiān zài hē.','Trà sữa ngon thế này, mai tôi uống nữa.'],
+['这件衣服太大了，有更小的吗？','Zhè jiàn yīfu tài dà le, yǒu gèng xiǎo de ma?','Bộ quần áo này to quá, có cái nhỏ hơn không?'],
+['汉语太难了。','Hànyǔ tài nán le.','Tiếng Trung khó quá.'],
+['我穿这件衣服。','Wǒ chuān zhè jiàn yīfu.','Tôi mặc bộ quần áo này.'],
+['这条裙子很适合你。','Zhè tiáo qúnzi hěn héshì nǐ.','Chiếc váy này rất hợp với bạn.'],
+['这条裙子对你很合适。','Zhè tiáo qúnzi duì nǐ hěn héshì.','Chiếc váy này rất phù hợp với bạn.'],
+['我在水果店买苹果。','Wǒ zài shuǐguǒdiàn mǎi píngguǒ.','Tôi mua táo ở cửa hàng hoa quả.'],
+['便宜点儿吧。','Piányi diǎnr ba.','Rẻ hơn chút đi.'],
+['这种西瓜很贵，那种西瓜很便宜。','Zhè zhǒng xīguā hěn guì, nà zhǒng xīguā hěn piányi.','Loại dưa hấu này đắt, loại dưa hấu kia rẻ.'],
+['一公斤苹果多少钱？','Yī gōngjīn píngguǒ duōshao qián?','Một kilogam táo bao nhiêu tiền?'],
+['他穿牛仔裤。','Tā chuān niúzǎikù.','Anh ấy mặc quần jeans.'],
+['我喜欢吃西瓜和苹果。','Wǒ xǐhuān chī xīguā hé píngguǒ.','Tôi thích ăn dưa hấu và táo.']
+];
+
+/* ===== TIỆN ÍCH ===== */
+const $=(s,p=document)=>p.querySelector(s),isH=c=>/[\u4e00-\u9fff]/.test(c);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=.8;const v=speechSynthesis.getVoices().find(v=>/zh/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+const boxes=(w,s=90)=>[...w].map(c=>isH(c)?`<span class="mi" style="--s:${s}px">${c}</span>`:`<span class="np">${c}</span>`).join('');
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const EX=[];const reg=(id,name,fn)=>EX.push({id,name,fn});
+
+/* ===== 1. FLASHCARD ===== */
+reg('flash','🃏 Flashcard',root=>{
+ let order=VOCAB.map((_,i)=>i),i=0,flip=false,known=new Set(store.get('known',[]));
+ const draw=()=>{const w=VOCAB[order[i]];
+  root.innerHTML=`<p class="mu">${i+1}/${order.length} · Đã thuộc: ${known.size}/${VOCAB.length}</p>
+  <div class="card" id="c" style="min-height:260px;cursor:pointer">${flip?
+   `<div class="py">${w.py}</div><div class="vi">${w.vi}</div><hr style="border-color:var(--ln)"><div class="mu">${w.exPy}</div><div style="font-size:22px">${w.exHan}</div>`:
+   `<div>${boxes(w.han)}</div><p class="mu">Chạm để lật thẻ</p>`}</div>
+  <div class="row"><button class="btn" id="p">‹ Trước</button><button class="btn" id="a">🔊 Từ</button><button class="btn" id="e">🔊 Câu</button><button class="btn" id="n">Sau ›</button></div>
+  <div class="row"><button class="btn ${known.has(w.han)?'pri':''}" id="k">${known.has(w.han)?'✓ Đã thuộc':'Đánh dấu đã thuộc'}</button><button class="btn" id="s">🔀 Xáo trộn</button><button class="btn" id="u">↺ Chỉ từ chưa thuộc</button></div>`;
+  $('#c').onclick=()=>{flip=!flip;draw()};
+  $('#p').onclick=()=>{i=(i-1+order.length)%order.length;flip=false;draw()};
+  $('#n').onclick=()=>{i=(i+1)%order.length;flip=false;draw()};
+  $('#a').onclick=()=>speak(w.han.replace(/…+/g,' '));$('#e').onclick=()=>speak(w.exHan);
+  $('#k').onclick=()=>{known.has(w.han)?known.delete(w.han):known.add(w.han);store.set('known',[...known]);draw()};
+  $('#s').onclick=()=>{order=shuf(order);i=0;flip=false;draw()};
+  $('#u').onclick=()=>{const o=VOCAB.map((_,x)=>x).filter(x=>!known.has(VOCAB[x].han));order=o.length?o:VOCAB.map((_,x)=>x);i=0;flip=false;draw()};
+ };draw();
+});
+
+/* ===== 2. TRẮC NGHIỆM ===== */
+reg('quiz','✅ Trắc nghiệm',root=>{
+ const modes={hv:['Hán → Nghĩa',w=>boxes(w.han,60)+`<div class="py">${w.py}</div>`,w=>w.vi],
+  vh:['Nghĩa → Hán',w=>`<div class="vi">${w.vi}</div>`,w=>w.han],
+  ph:['Pinyin → Hán',w=>`<div class="py">${w.py}</div>`,w=>w.han],
+  au:['🔊 Nghe → Nghĩa',w=>`<button class="ic" onclick="speak('${w.han}')">🔊</button>`,w=>w.vi]};
+ const menu=()=>{root.innerHTML=`<div class="card"><h3>Chọn kiểu câu hỏi</h3>`+Object.entries(modes).map(([k,m])=>`<button class="opt" data-m="${k}">${m[0]}</button>`).join('')+`</div>`;
+  root.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>start(b.dataset.m))};
+ const start=k=>{const [,Q,A]=modes[k],qs=shuf(VOCAB).slice(0,10);let n=0,sc=0,wrong=[];
+  const ask=()=>{if(n>=qs.length){root.innerHTML=`<div class="card"><h2>Điểm: ${sc}/${qs.length}</h2>${wrong.length?'<p class="mu">Cần ôn lại:</p>'+wrong.map(w=>`<div>${w.han} · ${w.py} · ${w.vi}</div>`).join(''):'🎉 Hoàn hảo!'}<div class="row"><button class="btn pri" id="r">Làm lại</button><button class="btn" id="m">Đổi kiểu</button></div></div>`;
+    $('#r').onclick=()=>start(k);$('#m').onclick=menu;return}
+   const w=qs[n],opts=shuf([w,...shuf(VOCAB.filter(x=>x!==w&&A(x)!==A(w))).slice(0,3)]);
+   root.innerHTML=`<p class="mu">Câu ${n+1}/${qs.length} · Đúng: ${sc}</p><div class="card">${Q(w)}</div>`+opts.map((o,j)=>`<button class="opt" data-j="${j}">${k=='vh'||k=='ph'?boxes(A(o),30):A(o)}</button>`).join('')+`<div class="row"><button class="btn pri" id="nx" style="display:none">Tiếp ›</button></div>`;
+   if(k=='au')speak(w.han);
+   root.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const o=opts[b.dataset.j],ok=o===w;
+    root.querySelectorAll('.opt').forEach((x,y)=>{x.disabled=true;if(opts[y]===w)x.classList.add('ok')});
+    if(ok)sc++;else{b.classList.add('no');wrong.push(w)}speak(w.han);$('#nx').style.display='';$('#nx').onclick=()=>{n++;ask()}})};
+  ask()};
+ menu();
+});
+
+/* ===== 3. XEM NÉT CHỮ (HanziWriter) ===== */
+reg('stroke','✍️ Nét chữ',root=>{
+ root.innerHTML=`<div class="row"><select id="sel">${VOCAB.map((w,i)=>`<option value="${i}">${w.han} – ${w.vi}</option>`).join('')}</select></div><div id="ws" class="row"></div>`;
+ if(typeof HanziWriter==='undefined'){$('#ws').innerHTML='<p class="mu">Cần internet để tải HanziWriter.</p>';return}
+ const show=()=>{const w=VOCAB[$('#sel').value],ws=$('#ws');ws.innerHTML='';const wr=[];
+  [...w.han].filter(isH).forEach(c=>{const d=document.createElement('div');d.style.textAlign='center';
+   d.innerHTML=`<div class="wr" style="--s:150px"></div><div class="row"><button class="btn">▶ Xem nét</button><button class="btn">✏️ Tập viết</button></div>`;ws.appendChild(d);
+   const h=HanziWriter.create(d.firstChild,c,{width:150,height:150,padding:6,showOutline:true,strokeAnimationSpeed:1,delayBetweenStrokes:150,onLoadCharDataError:()=>d.firstChild.textContent=c});
+   wr.push(h);const [b1,b2]=d.querySelectorAll('button');b1.onclick=()=>h.animateCharacter();b2.onclick=()=>h.quiz();});
+  const all=document.createElement('div');all.style.width='100%';all.innerHTML=`<div class="row"><button class="btn pri">▶ Xem cả từ</button><button class="btn">🔊 Phát âm</button></div><div class="py" style="text-align:center">${w.py}</div>`;
+  ws.appendChild(all);const [b1,b2]=all.querySelectorAll('button');
+  b1.onclick=async()=>{for(const h of wr){await h.animateCharacter()}};b2.onclick=()=>speak(w.han);};
+ $('#sel').onchange=show;show();
+});
+
+/* ===== 4. MẪU CÂU ===== */
+reg('sent','💬 Mẫu câu',root=>{
+ root.innerHTML=`<table>${SENT.map(s=>`<tr><td><div style="font-size:20px">${s[0]}</div><div class="py" style="font-size:15px">${s[1]}</div><div class="mu">${s[2]}</div></td><td><button class="ic" onclick="speak('${s[0]}')">🔊</button></td></tr>`).join('')}</table>`;
+});
+
+/* ===== THÊM BÀI TẬP MỚI Ở DƯỚI DÒNG NÀY: reg('id','Tên tab',root=>{ ...vẽ vào root.innerHTML... }); ===== */
+
+/* ===== KHỞI ĐỘNG ===== */
+const tabs=$('#tabs'),app=$('#app');
+EX.forEach((e,k)=>{const b=document.createElement('button');b.textContent=e.name;b.onclick=()=>{tabs.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');app.innerHTML='';e.fn(app)};tabs.appendChild(b)});
+tabs.firstChild.click();
+</script></body></html>
